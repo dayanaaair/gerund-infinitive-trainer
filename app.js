@@ -149,7 +149,7 @@ const meaningQs = [
 const titleMap={home:['Пятиминутная практика','Сегодня'],cards:['Активное вспоминание','Карточки'],practice:['Проверка знаний','Тренировка'],rules:['Кратко и по делу','Справочник'],library:['Поиск по базе','Все конструкции'],progress:['Личная статистика','Прогресс']};
 const storageKey='gi-trainer-v1';
 let state=Object.assign({known:{},seen:{},mistakes:{},answers:0,correct:0,best:0,streak:1,lastVisit:new Date().toDateString()},JSON.parse(localStorage.getItem(storageKey)||'{}'));
-let deck=[...cards],cardIndex=0,cardFilter='all',quiz={questions:[],index:0,score:0,mode:'choice',locked:false};
+let deck=[],cardIndex=0,cardFilter='all',quiz={questions:[],index:0,score:0,mode:'choice',locked:false};
 const $=(s)=>document.querySelector(s), $$=(s)=>[...document.querySelectorAll(s)];
 function save(){localStorage.setItem(storageKey,JSON.stringify(state));updateStats()}
 function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
@@ -164,10 +164,25 @@ function showView(name){
 }
 $$('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
 
+function mixForms(items){
+  const buckets={};
+  items.forEach(card=>(buckets[card.form]??=[]).push(card));
+  Object.keys(buckets).forEach(key=>buckets[key]=shuffle(buckets[key]));
+  const mixed=[]; let previous=null;
+  while(Object.values(buckets).some(group=>group.length)){
+    let choices=Object.entries(buckets).filter(([key,group])=>group.length&&key!==previous);
+    if(!choices.length) choices=Object.entries(buckets).filter(([,group])=>group.length);
+    const largest=Math.max(...choices.map(([,group])=>group.length));
+    choices=choices.filter(([,group])=>group.length===largest);
+    const [key,group]=choices[Math.floor(Math.random()*choices.length)];
+    mixed.push(group.pop()); previous=key;
+  }
+  return mixed;
+}
 function filteredDeck(){
-  if(cardFilter==='all') return cards;
-  if(cardFilter==='mistakes') return cards.filter(c=>(state.mistakes[c.id]||0)>0).sort((a,b)=>(state.mistakes[b.id]||0)-(state.mistakes[a.id]||0));
-  return cards.filter(c=>c.form===cardFilter);
+  if(cardFilter==='all') return mixForms(cards);
+  if(cardFilter==='mistakes') return mixForms(cards.filter(c=>(state.mistakes[c.id]||0)>0));
+  return shuffle(cards.filter(c=>c.form===cardFilter));
 }
 function setDeck(filter){cardFilter=filter;deck=filteredDeck();if(!deck.length) deck=cards.slice(0,1);cardIndex=0;renderCard();}
 function renderCard(){
@@ -177,7 +192,7 @@ function renderCard(){
 function moveCard(delta){cardIndex=(cardIndex+delta+deck.length)%deck.length;renderCard()}
 function rateCard(known){const c=deck[cardIndex];state.seen[c.id]=(state.seen[c.id]||0)+1;if(known){state.known[c.id]=(state.known[c.id]||0)+1;if(state.mistakes[c.id])state.mistakes[c.id]--}else{state.mistakes[c.id]=(state.mistakes[c.id]||0)+1;state.known[c.id]=Math.max(0,(state.known[c.id]||0)-1)}save();moveCard(1)}
 $('#flashcard').addEventListener('click',()=>$('#flashcard').classList.toggle('flipped'));$('#flashcard').addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();$('#flashcard').classList.toggle('flipped')}});$('#prevCard').onclick=()=>moveCard(-1);$('#nextCard').onclick=()=>moveCard(1);$('#cardAgain').onclick=()=>rateCard(false);$('#cardKnow').onclick=()=>rateCard(true);
-$('#cardFilters').addEventListener('click',e=>{const b=e.target.closest('.filter');if(!b)return;$$('#cardFilters .filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');setDeck(b.dataset.filter)});
+$('#cardFilters').addEventListener('click',e=>{const b=e.target.closest('.filter');if(!b)return;if(b.dataset.filter==='shuffle'){setDeck(cardFilter);return;}$$('#cardFilters .filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');setDeck(b.dataset.filter)});
 document.addEventListener('keydown',e=>{if(!$('#view-cards').classList.contains('active'))return;if(e.key==='ArrowLeft')rateCard(false);if(e.key==='ArrowRight')rateCard(true)});
 
 function choiceQuestions(source=cards){return shuffle(source).slice(0,10).map(c=>{let opts;if(c.form==='gerund'||c.form==='preposition')opts=['doing','to do','do'];else if(c.form==='bare')opts=['do','to do','doing'];else if(c.form==='meaning')return meaningQs[Math.floor(Math.random()*meaningQs.length)];else opts=['to do','doing','do'];return {q:`Какая модель следует после «${c.term}»?`,s:c.term+' ___',a:c.form==='gerund'||c.form==='preposition'?'doing':c.form==='bare'?'do':'to do',opts,why:`Правильный паттерн: ${c.pattern}.`,cardId:c.id}})}
@@ -210,5 +225,5 @@ function updateStats(){
   const topics=[['Gerund','gerund'],['To-infinitive','infinitive'],['Object + infinitive','object'],['Bare infinitive','bare'],['Предлоги + -ing','preposition'],['Разница значений','meaning']];$('#topicBars').innerHTML=topics.map(([n,f])=>{const group=cards.filter(c=>c.form===f),done=group.filter(c=>(state.known[c.id]||0)>=2).length,p=Math.round(done/group.length*100);return `<div class="topic-row"><span>${n}</span><i><b style="width:${p}%"></b></i><strong>${p}%</strong></div>`}).join('');const mistakes=cards.filter(c=>(state.mistakes[c.id]||0)>0).sort((a,b)=>state.mistakes[b.id]-state.mistakes[a.id]).slice(0,5);$('#mistakeList').innerHTML=mistakes.length?mistakes.map(c=>`<div class="mistake-item"><span>${escapeHtml(c.pattern)}</span><b>${state.mistakes[c.id]}×</b></div>`).join(''):'<p style="color:var(--muted);font-size:13px">Ошибок пока нет — пройди первый тест.</p>';
 }
 $('#resetProgress').onclick=()=>{if(confirm('Сбросить весь прогресс и историю ошибок?')){localStorage.removeItem(storageKey);state={known:{},seen:{},mistakes:{},answers:0,correct:0,best:0,streak:1,lastVisit:new Date().toDateString()};updateStats()}};
-renderRules();renderLibrary();renderCard();updateStats();
+renderRules();renderLibrary();setDeck('all');updateStats();
 
