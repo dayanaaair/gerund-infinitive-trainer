@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
   <div class="app-shell">
@@ -96,7 +96,10 @@
       <section class="view" id="view-cards">
         <div class="section-intro">
           <div><span class="overline">Активное вспоминание</span><h1>Карточки</h1><p>Сначала произнеси конструкцию вслух, потом переверни карточку.</p></div>
-          <div class="session-count"><b id="cardPosition">1 / 1</b><span>в этой колоде</span></div>
+          <div class="card-header-actions">
+            <div class="session-count"><b id="cardPosition">1 / 1</b><span>в этой колоде</span></div>
+            <button class="shuffle-main" id="shuffleDeck"><span>↻</span> Перемешать колоду</button>
+          </div>
         </div>
         <div class="filter-row" id="cardFilters">
           <button class="filter active" data-filter="all">Все</button>
@@ -106,7 +109,6 @@
           <button class="filter" data-filter="meaning">Меняется смысл</button>
           <button class="filter" data-filter="preposition">После предлога</button>
           <button class="filter" data-filter="mistakes">Мои ошибки</button>
-          <button class="filter" data-filter="shuffle">↻ Перемешать</button>
         </div>
         <div class="card-stage">
           <button class="arrow-button" id="prevCard" aria-label="Предыдущая карточка">←</button>
@@ -195,7 +197,7 @@
   <nav class="mobile-nav" aria-label="Мобильная навигация">
     <button class="active" data-view="home"><span>⌂</span>Сегодня</button><button data-view="cards"><span>▱</span>Карточки</button><button data-view="practice"><span>✦</span>Практика</button><button data-view="rules"><span>≡</span>Правила</button><button data-view="library"><span>⌕</span>База</button>
   </nav>
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
 
