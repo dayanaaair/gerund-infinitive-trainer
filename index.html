@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f5ef">
+  <meta name="description" content="Интерактивный тренажёр по gerund и infinitive: карточки, упражнения, правила и прогресс.">
+  <title>Gerund or Infinitive?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Основная навигация">
+      <button class="brand" data-view="home" aria-label="На главную">
+        <span class="brand-mark">G<span>/</span>I</span>
+        <span class="brand-copy"><strong>Gerund</strong><small>or infinitive?</small></span>
+      </button>
+      <nav class="nav-list">
+        <button class="nav-item active" data-view="home"><span>⌂</span> Сегодня</button>
+        <button class="nav-item" data-view="cards"><span>▱</span> Карточки <b id="dueBadge">0</b></button>
+        <button class="nav-item" data-view="practice"><span>✦</span> Тренировка</button>
+        <button class="nav-item" data-view="rules"><span>≡</span> Справочник</button>
+        <button class="nav-item" data-view="library"><span>⌕</span> Все конструкции</button>
+        <button class="nav-item" data-view="progress"><span>↗</span> Прогресс</button>
+      </nav>
+      <div class="side-note">
+        <span class="side-note-kicker">Совет</span>
+        <p>10 минут каждый день работают лучше, чем час раз в неделю.</p>
+      </div>
+      <button class="reset-link" id="resetProgress">Сбросить прогресс</button>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-brand brand" data-view="home"><span class="brand-mark">G<span>/</span>I</span></button>
+        <div class="topbar-title"><span id="eyebrow">Пятиминутная практика</span><strong id="pageTitle">Сегодня</strong></div>
+        <div class="streak-pill" title="Дней подряд"><span>●</span><b id="streakTop">1</b> день</div>
+      </header>
+
+      <section class="view active" id="view-home">
+        <div class="hero">
+          <div class="hero-copy">
+            <span class="overline">Gerund × Infinitive</span>
+            <h1>Не угадывай.<br><em>Узнавай паттерн.</em></h1>
+            <p>Запоминай конструкции короткими подходами, сразу проверяй себя и возвращайся только к тому, что пока не закрепилось.</p>
+            <div class="hero-actions">
+              <button class="primary" data-view="cards">Начать карточки <span>→</span></button>
+              <button class="secondary" data-view="practice">Быстрая тренировка</button>
+            </div>
+          </div>
+          <div class="hero-visual" aria-label="Пример карточки">
+            <div class="orbit orbit-a">-ing</div>
+            <div class="orbit orbit-b">to + V</div>
+            <div class="mini-card back-card"><span>avoid</span></div>
+            <div class="mini-card front-card">
+              <span class="mini-label">Что идёт дальше?</span>
+              <strong>avoid</strong>
+              <div class="answer-line">avoid <b>doing</b></div>
+              <small>I avoid checking my phone in class.</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel daily-panel">
+            <div class="panel-heading"><div><span class="overline">План на сегодня</span><h2>Короткий подход</h2></div><span class="time-chip">≈ 8 мин</span></div>
+            <div class="task-list">
+              <button class="task-row" data-view="cards"><span class="task-icon coral">▱</span><span><strong>Повторить карточки</strong><small id="cardsTaskText">12 конструкций</small></span><b>→</b></button>
+              <button class="task-row" data-practice-mode="choice"><span class="task-icon yellow">✓</span><span><strong>Выбрать форму</strong><small>10 вопросов</small></span><b>→</b></button>
+              <button class="task-row" data-practice-mode="meaning"><span class="task-icon lilac">↔</span><span><strong>Различить смысл</strong><small>stop, try, remember…</small></span><b>→</b></button>
+            </div>
+          </article>
+          <article class="panel snapshot-panel">
+            <div class="panel-heading"><div><span class="overline">Твой прогресс</span><h2>Картина знаний</h2></div><button class="text-button" data-view="progress">Подробнее</button></div>
+            <div class="donut-wrap">
+              <div class="donut" id="homeDonut"><span><b id="masteryPercent">0%</b><small>освоено</small></span></div>
+              <div class="legend">
+                <div><i class="dot mastered"></i><span>Знаю</span><b id="masteredCount">0</b></div>
+                <div><i class="dot learning"></i><span>Учу</span><b id="learningCount">0</b></div>
+                <div><i class="dot new"></i><span>Новые</span><b id="newCount">0</b></div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <article class="panel focus-panel">
+          <div><span class="overline">Смысл решает</span><h2>Одна форма — две разные истории</h2><p><b>stop doing</b> — прекратить действие. <b>stop to do</b> — остановиться, чтобы сделать другое.</p></div>
+          <div class="compare-mini"><span>She stopped <b>talking.</b><small>Она замолчала.</small></span><i>≠</i><span>She stopped <b>to talk.</b><small>Она остановилась поговорить.</small></span></div>
+          <button class="secondary" data-practice-mode="meaning">Тренировать различия</button>
+        </article>
+      </section>
+
+      <section class="view" id="view-cards">
+        <div class="section-intro">
+          <div><span class="overline">Активное вспоминание</span><h1>Карточки</h1><p>Сначала произнеси конструкцию вслух, потом переверни карточку.</p></div>
+          <div class="session-count"><b id="cardPosition">1 / 1</b><span>в этой колоде</span></div>
+        </div>
+        <div class="filter-row" id="cardFilters">
+          <button class="filter active" data-filter="all">Все</button>
+          <button class="filter" data-filter="gerund">Gerund</button>
+          <button class="filter" data-filter="infinitive">Infinitive</button>
+          <button class="filter" data-filter="object">Object + infinitive</button>
+          <button class="filter" data-filter="meaning">Меняется смысл</button>
+          <button class="filter" data-filter="preposition">После предлога</button>
+          <button class="filter" data-filter="mistakes">Мои ошибки</button>
+        </div>
+        <div class="card-stage">
+          <button class="arrow-button" id="prevCard" aria-label="Предыдущая карточка">←</button>
+          <div class="flashcard" id="flashcard" tabindex="0" role="button" aria-label="Перевернуть карточку">
+            <div class="flashcard-inner">
+              <div class="flash-face flash-front">
+                <span class="card-type" id="cardType">Глагол</span>
+                <span class="card-prompt">Что идёт дальше?</span>
+                <strong id="cardTerm">avoid</strong>
+                <span class="tap-hint">Нажми, чтобы проверить <kbd>Space</kbd></span>
+              </div>
+              <div class="flash-face flash-back">
+                <span class="card-type" id="cardTag">GERUND</span>
+                <strong id="cardPattern">avoid doing</strong>
+                <p id="cardMeaning">избегать чего-либо</p>
+                <div class="example" id="cardExample">I avoid checking my phone in class.</div>
+                <div class="memory-hook" id="cardHook">После avoid действие представляем как занятие → -ing.</div>
+              </div>
+            </div>
+          </div>
+          <button class="arrow-button" id="nextCard" aria-label="Следующая карточка">→</button>
+        </div>
+        <div class="card-actions">
+          <button class="again" id="cardAgain"><span>↺</span> Ещё раз</button>
+          <button class="know" id="cardKnow"><span>✓</span> Знаю</button>
+        </div>
+        <div class="key-hints"><span><kbd>←</kbd> ещё раз</span><span><kbd>→</kbd> знаю</span></div>
+      </section>
+
+      <section class="view" id="view-practice">
+        <div class="section-intro">
+          <div><span class="overline">Тренажёр</span><h1>Практика</h1><p>Выбери режим — или пройди смешанный раунд.</p></div>
+          <div class="score-chip"><span>Лучший результат</span><b id="bestScore">—</b></div>
+        </div>
+        <div class="mode-grid" id="modeGrid">
+          <button class="mode-card coral-mode" data-mode="choice"><span>01</span><div><h2>Выбери форму</h2><p>Gerund, to-infinitive или bare infinitive?</p></div><b>→</b></button>
+          <button class="mode-card yellow-mode" data-mode="type"><span>02</span><div><h2>Вставь глагол</h2><p>Напечатай правильную форму в контексте.</p></div><b>→</b></button>
+          <button class="mode-card lilac-mode" data-mode="meaning"><span>03</span><div><h2>Различи смысл</h2><p>Пары stop, try, regret, remember и другие.</p></div><b>→</b></button>
+          <button class="mode-card green-mode" data-mode="mixed"><span>04</span><div><h2>Экзамен-микс</h2><p>10 вопросов всех типов без подсказок.</p></div><b>→</b></button>
+        </div>
+        <div class="quiz hidden" id="quizBox">
+          <div class="quiz-top"><button class="text-button" id="exitQuiz">← К режимам</button><div class="quiz-progress"><span id="quizProgressText">1 / 10</span><i><b id="quizProgressBar"></b></i></div><span class="quiz-score">Счёт: <b id="quizScore">0</b></span></div>
+          <div class="quiz-body" id="quizBody"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-rules">
+        <div class="section-intro"><div><span class="overline">Понять систему</span><h1>Справочник</h1><p>Все основные модели — от общего правила до ловушек.</p></div></div>
+        <div class="rule-layout">
+          <nav class="rule-nav" id="ruleNav"></nav>
+          <div class="rule-content" id="ruleContent"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-library">
+        <div class="section-intro"><div><span class="overline">Полная база</span><h1>Все конструкции</h1><p><span id="libraryCount">0</span> карточек с примерами и смысловыми подсказками.</p></div></div>
+        <div class="library-tools">
+          <label class="search-box"><span>⌕</span><input id="librarySearch" type="search" placeholder="Найти: avoid, привыкнуть, предлог…"></label>
+          <select id="libraryFilter" aria-label="Фильтр по типу">
+            <option value="all">Все группы</option><option value="gerund">Gerund</option><option value="infinitive">To-infinitive</option><option value="object">Object + infinitive</option><option value="bare">Bare infinitive</option><option value="meaning">Меняется смысл</option><option value="preposition">Предлоги + -ing</option>
+          </select>
+        </div>
+        <div class="library-list" id="libraryList"></div>
+      </section>
+
+      <section class="view" id="view-progress">
+        <div class="section-intro"><div><span class="overline">Твоя статистика</span><h1>Прогресс</h1><p>Смотри, что уже закрепилось и куда направить следующий подход.</p></div></div>
+        <div class="stats-grid">
+          <article class="stat-card"><span>Освоено</span><b id="statMastered">0</b><small>конструкций</small></article>
+          <article class="stat-card"><span>Ответов</span><b id="statAnswers">0</b><small>за всё время</small></article>
+          <article class="stat-card"><span>Точность</span><b id="statAccuracy">—</b><small>в тренировках</small></article>
+          <article class="stat-card"><span>Серия</span><b id="statStreak">1</b><small>дней подряд</small></article>
+        </div>
+        <div class="progress-grid">
+          <article class="panel"><div class="panel-heading"><div><span class="overline">По темам</span><h2>Что уже получается</h2></div></div><div id="topicBars" class="topic-bars"></div></article>
+          <article class="panel mistakes-panel"><div class="panel-heading"><div><span class="overline">Точка роста</span><h2>Частые ошибки</h2></div></div><div id="mistakeList"></div><button class="primary full" data-practice-mode="mistakes">Потренировать ошибки</button></article>
+        </div>
+      </section>
+
+      <footer>
+        <span>Gerund or Infinitive? · учебный тренажёр</span>
+        <span>Основа: приложенная глава · дополнено по <a href="https://learnenglish.britishcouncil.org/free-resources/grammar/a1-a2/verbs-followed-ing-or-infinitive" target="_blank" rel="noreferrer">British Council</a> и <a href="https://dictionary.cambridge.org/grammar/british-grammar/verb-patterns-verb-ing-or-verb-to-infinitive" target="_blank" rel="noreferrer">Cambridge Grammar</a></span>
+      </footer>
+    </main>
+  </div>
+  <nav class="mobile-nav" aria-label="Мобильная навигация">
+    <button class="active" data-view="home"><span>⌂</span>Сегодня</button><button data-view="cards"><span>▱</span>Карточки</button><button data-view="practice"><span>✦</span>Практика</button><button data-view="rules"><span>≡</span>Правила</button><button data-view="library"><span>⌕</span>База</button>
+  </nav>
+  <script src="app.js"></script>
+</body>
+</html>
+
